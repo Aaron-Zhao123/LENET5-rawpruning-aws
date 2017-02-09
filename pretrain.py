@@ -5,9 +5,9 @@ import pickle
 np.set_printoptions(precision=128)
 # open_file_name = 'weights_log/weights10.pkl'
 # open_file_name = 'weights_log/weights_quan'+'.pkl'
-open_file_name = 'weights0'+'.pkl'
+# open_file_name = 'weights1'+'.pkl'
 # open_file_name = 'weights_log/pcov99pfc99'+'.pkl'
-# open_file_name = 'weights_log/weights0.pkl'
+open_file_name = 'weights_log/weights2.pkl'
 Test = True;
 # MASK_GEN = True
 MASK_GEN = False
@@ -146,23 +146,42 @@ if (Test):
     print('-'*79)
     print('Pruning information')
     total_weights_cnt = 0
+    total_non_zero = 0
     (non_zeros, total) = calculate_non_zero_weights(W_conv1.eval())
     total_weights_cnt += total
+    total_non_zero += non_zeros
     print('cov1 has prunned {} percent of its weights'.format((total-non_zeros)*100/total))
     (non_zeros, total) = calculate_non_zero_weights(W_conv2.eval())
     total_weights_cnt += total
+    total_non_zero += non_zeros
     print('cov2 has prunned {} percent of its weights'.format((total-non_zeros)*100/total))
     (non_zeros, total) = calculate_non_zero_weights(W_fc1.eval())
     total_weights_cnt += total
+    total_non_zero += non_zeros
     print('fc1 has prunned {} percent of its weights'.format((total-non_zeros)*100/total))
     (non_zeros, total) = calculate_non_zero_weights(W_fc2.eval())
     total_weights_cnt += total
+    total_non_zero += non_zeros
     print('fc2 has prunned {} percent of its weights'.format((total-non_zeros)*100/total))
-    total_weights_cnt += len(b_conv1.eval().flatten())
-    total_weights_cnt += len(b_conv2.eval().flatten())
-    total_weights_cnt += len(b_fc1.eval().flatten())
-    total_weights_cnt += len(b_fc2.eval().flatten())
-    print('total number of weights: is now: {}'.format(total_weights_cnt))
+    (non_zeros, total) = calculate_non_zero_weights(b_conv1.eval())
+    total_weights_cnt += total
+    total_non_zero += non_zeros
+    print('cov1 has prunned {} percent of its biases'.format((total-non_zeros)*100/total))
+    (non_zeros, total) = calculate_non_zero_weights(b_conv2.eval())
+    # print(b_conv2.eval().flatten())
+    total_weights_cnt += total
+    total_non_zero += non_zeros
+    print('cov2 has prunned {} percent of its biases'.format((total-non_zeros)*100/total))
+    (non_zeros, total) = calculate_non_zero_weights(b_fc1.eval())
+    total_weights_cnt += total
+    total_non_zero += non_zeros
+    print('fc1 has prunned {} percent of its biases'.format((total-non_zeros)*100/total))
+    (non_zeros, total) = calculate_non_zero_weights(b_fc2.eval())
+    total_weights_cnt += total
+    total_non_zero += non_zeros
+    print('fc2 has prunned {} percent of its biases'.format((total-non_zeros)*100/total))
+
+    print('total number of weights: is now: {}, originally, there are {} parameters'.format(total_weights_cnt, total_non_zero))
 else:
     # train the model
     for i in range(200000):
