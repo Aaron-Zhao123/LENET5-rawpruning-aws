@@ -10,7 +10,7 @@ import training_v3
 
 acc_list = []
 count = 0
-while (count < 2):
+while (count < 10):
     param = [
         ('-p',count),
         ('-tc1',0.12),
